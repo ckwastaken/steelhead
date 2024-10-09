@@ -37,7 +37,7 @@
       }
       #unity-logo {
         height: 170px;
-        background: url("goose.webp") no-repeat;
+        background: url("peroxide/image/goose.webp") no-repeat;
         background-size: 100%, 100%;
       }
       #unity-progress-bar-empty {
@@ -305,6 +305,9 @@ if (supportsKeyboardLock) {
   });
 }
 
+function RunConsoleCommand(x) {
+  Game.SendMessage('console', 'RunConsoleCommand', x)
+}
 
     </script>
     <link
