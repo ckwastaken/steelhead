@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Sunstone(steelhead)</title>
+    <link rel="shortcut icon" href="../../favicon.ico" />
+    <style>
+      @import url('../../steelhead/css2.css');
+
+      * {
+        font-family: "Playpen Sans", cursive;
+      }
+
+      body {
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+      }
+      #unity-container {
+        position: absolute;
+      }
+      #unity-container.unity-desktop {
+        width: 100%;
+        height: 100%;
+      }
+      .unity-desktop #unity-canvas {
+        width: 100%;
+        height: 100%;
+      }
+      #unity-loading-bar {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+      }
+      #unity-logo {
+        height: 170px;
+        background: url("../../steelhead/image/goose.webp") no-repeat;
+        background-size: 100%, 100%;
+      }
+      #unity-progress-bar-empty {
+        width: 141px;
+        height: 18px;
+        margin-top: 10px;
+        margin-left: 6.5px;
+        background-color: #bea62b;
+      }
+      #unity-progress-bar-full {
+        width: 0%;
+        height: 18px;
+        margin-top: 10px;
+        background-color: #3da0fd;
+      }
+      #unity-footer {
+        position: relative;
+      }
+      .unity-desktop #unity-footer {
+        display: none;
+      }
+      #unity-build-title {
+        float: right;
+        margin-right: 10px;
+        line-height: 38px;
+        font-family: arial;
+        font-size: 18px;
+      }
+      #unity-fullscreen-button {
+        float: right;
+        width: 38px;
+        height: 38px;
+        background: url("fullscreen-button.png") no-repeat center;
+      }
+      #unity-warning {
+        position: absolute;
+        left: 50%;
+        top: 5%;
+        transform: translate(-50%);
+        background: white;
+        padding: 10px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body style="background-color: #FFDF38">
+    <noscript>
+    <h1>
+      <center>
+        <img src="data:image/png;base64,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" style="border-radius: 15px;"/><br><br>
+          Oh Shit!<br>
+          I think you need JavaScript enabled for this<br><br>Open a new tab and paste<br>chrome://settings/content/siteDetails?site=https://sunstone.airfryer.zip<br>into the URL bar<br><br><img src="../../steelhead/image/warnjs.png" style="border-radius: 15px;"/><br>Then, Under JavaScript, change "Block" to "Allow"
+      </center>
+    </h1>
+  </noscript>
+  
+    <div id="unity-container" class="unity-desktop" width="100%" height="100%">
+      <canvas id="unity-canvas" width="100%" height="100%"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"></div>
+      <div id="unity-footer">
+        <div id="unity-webgl-logo"></div>
+        <div id="unity-fullscreen-button"></div>
+      </div>
+    </div>
+    <script>
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var warningBanner = document.querySelector("#unity-warning");
+
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length
+            ? "block"
+            : "none";
+        }
+        var div = document.createElement("div");
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == "error") div.style = "background: red; padding: 10px;";
+        else {
+          if (type == "warning")
+            div.style = "background: yellow; padding: 10px;";
+          setTimeout(function () {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "../../ms2/Build";
+      var loaderUrl = buildUrl + "/ms2.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/ms2.data",
+        frameworkUrl: buildUrl + "/ms2.framework.js",
+        codeUrl: buildUrl + "/ms2.wasm",
+        streamingAssetsUrl: "ms2/StreamingAssets",
+        companyName: "goose",
+        productName: "steelhead",
+        productVersion: "0.1",
+        showBanner: unityShowBanner,
+      };
+
+      // By default Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      /*      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+
+        var meta = document.createElement("meta");
+        meta.name = "viewport";
+        meta.content =
+          "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
+        document.getElementsByTagName("head")[0].appendChild(meta);
+        container.className = "unity-mobile";
+        canvas.className = "unity-mobile";
+
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
+
+        unityShowBanner(
+          "WebGL builds are not offically supported on mobile devices<br><br>However, they are offically supported on switchroot's build of android for the Nintendo Switch"
+        );
+      } else {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+      }*/
+
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        })
+          .then((unityInstance) => {
+            Game = unityInstance;
+            loadingBar.style.display = "none";
+            fullscreenButton.onclick = () => {
+              unityInstance.SetFullscreen(1);
+            };
+          })
+          .catch((message) => {
+            alert(message);
+          });
+      };
+      document.body.appendChild(script);
+    </script>
+    <script>
+      /*
+const urlParams = new URLSearchParams(window.location.search);
+
+if (urlParams.get("server") == "1") {
+  document.body.style = 'background-image: url("/page/herbert-green.png");';
+}
+
+if (urlParams.get("server") == "2") {
+  document.body.style =
+    'background-image: url("/page/rockruff-background.png");';
+}
+*/
+
+window.onbeforeunload = function () {
+  return "Are you sure want to LOGOUT the session ?";
+};
+
+if (window.location.hostname != "localhost") {
+  setTimeout(myGreeting, 500);
+}
+
+function myGreeting() {
+  setTimeout(
+    console.log.bind(
+      console,
+      "\n%cSTOP!\n\nEDITING DATA INSIDE THIS GAME MAY CORRUPT YOUR SAVE FILE!\n\nPLEASE CLOSE THIS WINDOW IMMEDITELY!\n\n\n" +
+        Date.now(),
+      "color:red;font-size:50px;font-weight:bold;text-shadow: 1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black, -1px -1px 0px black;"
+    ),
+    100
+  );
+  setTimeout(myGreeting, 500);
+}
+
+
+//if (/\bCrOS\b/.test(navigator.userAgent)) {
+  window.addEventListener(
+    "keydown",
+    function (e) {
+      if (e.key == "F1") {
+        document.querySelector("link[rel='shortcut icon']").href =
+          "../../steelhead/image/drive.png";
+        document.title = "Google Drive";
+        window.open("https://classroom.google.com/", "_blank");
+      }
+    },
+    false
+  );
+//}
+
+function InjectWebglInspector() {
+  var newScript = document.createElement("script");
+  newScript.onload = function () {
+    var spector = new SPECTOR.Spector();
+    spector.displayUI();
+  };
+  document.head.appendChild(newScript);
+  newScript.src = "spector.bundle.js";
+  InjectWebglInspector = function() { console.log("spector alr injected dumbass") };
+}
+
+window.addEventListener(
+  "keydown",
+  function (e) {
+    if (e.key == "=") {
+      InjectWebglInspector()
+    }
+  },
+  false
+);
+
+
+      document.addEventListener("keydown", (event) => {
+        event.preventDefault();
+        if (event.ctrlKey && event.key === "f") {
+          Game.SetFullscreen(1);
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        event.preventDefault();
+        if (event.ctrlKey && event.shiftKey && event.key === "i") {
+          console.log("no dev console for you :(");
+        }
+      });
+
+
+
+      const supportsKeyboardLock =
+    ('keyboard' in navigator) && ('lock' in navigator.keyboard);
+
+if (supportsKeyboardLock) {
+  document.addEventListener('fullscreenchange', async () => {
+    if (document.fullscreenElement) {
+      // The magic happens here… 🦄
+      await navigator.keyboard.lock(['Escape']);
+      console.log('Keyboard locked.');
+      return;
+    }
+    navigator.keyboard.unlock();
+    console.log('Keyboard unlocked.');
+  });
+}
+
+function RunConsoleCommand(x) {
+  Game.SendMessage('console', 'RunConsoleCommand', x)
+}
+
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://www.securly.com/site/css/fonts/metropolis/stylesheet.css"
+    />
+    <img
+      src="https://prod-web-assets-securly.s3.us-west-1.amazonaws.com/images/login-multi-school-icon.svg"
+      width="0"
+    />
+  </body>
+</html>
