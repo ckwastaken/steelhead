@@ -143,13 +143,13 @@
         updateBannerVisibility();
       }
 
-      var buildUrl = "../../ms2/Build";
-      var loaderUrl = buildUrl + "/ms2.loader.js";
+      var buildUrl = "../../steelhead/build/Build";
+      var loaderUrl = buildUrl + "/build.loader.js";
       var config = {
-        dataUrl: buildUrl + "/ms2.data",
-        frameworkUrl: buildUrl + "/ms2.framework.js",
-        codeUrl: buildUrl + "/ms2.wasm",
-        streamingAssetsUrl: "ms2/StreamingAssets",
+        dataUrl: buildUrl + "/build.data",
+        frameworkUrl: buildUrl + "/build.framework.js",
+        codeUrl: buildUrl + "/build.wasm",
+        streamingAssetsUrl: "build/StreamingAssets",
         companyName: "goose",
         productName: "steelhead",
         productVersion: "0.1",
@@ -312,7 +312,8 @@ if (supportsKeyboardLock) {
 }
 
 function RunConsoleCommand(x) {
-  Game.SendMessage('console', 'RunConsoleCommand', x)
+  Game.SendMessage('console', 'RunConsoleCommand', x.replaceAll("(space)"," "))
+  
 }
 
     </script>
